@@ -3,11 +3,11 @@ package database
 import (
 	"database/sql"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 )
 
-func NewMySQL(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("mysql", dsn)
+func NewPostgres(dsn string) (*sql.DB, error) {
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
