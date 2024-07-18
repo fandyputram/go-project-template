@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"net/http"
 
 	"github.com/fandyputram/go-project-template/config"
 	httpHandler "github.com/fandyputram/go-project-template/internal/delivery/http"
@@ -26,11 +25,11 @@ func main() {
 	uc := usecase.NewUsecase(repo)
 
 	// Initialize HTTP handler
-	handler := httpHandler.NewHandler(uc)
+	r := httpHandler.NewHandler(uc)
 
 	// Start HTTP server
 	log.Printf("Starting server on %s", cfg.Server.Address)
-	if err := http.ListenAndServe(cfg.Server.Address, handler); err != nil {
+	if err := r.Run(cfg.Server.Address); err != nil {
 		log.Fatal(err)
 	}
 }

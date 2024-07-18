@@ -1,12 +1,14 @@
 package usecase
 
 import (
+	"strconv"
+
 	"github.com/fandyputram/go-project-template/internal/entity"
 	"github.com/fandyputram/go-project-template/internal/repository"
 )
 
 type Usecase interface {
-	GetUser(id int) (*entity.User, error)
+	GetUser(id string) (*entity.User, error)
 }
 
 type usecase struct {
@@ -17,6 +19,10 @@ func NewUsecase(ur repository.UserRepository) Usecase {
 	return &usecase{userRepo: ur}
 }
 
-func (u *usecase) GetUser(id int) (*entity.User, error) {
-	return u.userRepo.GetUser(id)
+func (u *usecase) GetUser(id string) (*entity.User, error) {
+	userId, err := strconv.Atoi(id)
+	if err != nil {
+		return nil, err
+	}
+	return u.userRepo.GetUser(userId)
 }
