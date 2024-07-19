@@ -24,12 +24,18 @@ func (r *MySQLRepository) GetUser(id int) (*entity.User, error) {
 	return user, nil
 }
 
-func (r *MySQLRepository) GetUserByCredentials(username, password string) (*entity.User, error) {
+func (r *MySQLRepository) GetUserByCredentials(username string) (*entity.User, error) {
 	user := &entity.User{}
-	query := "SELECT id, username, password, email FROM users WHERE username=? AND password=?"
-	err := r.DB.QueryRow(query, username, password).Scan(&user.ID, &user.Username, &user.Password, &user.Email)
+	query := "SELECT id, username, password, email FROM users WHERE username=?"
+	err := r.DB.QueryRow(query, username).Scan(&user.ID, &user.Username, &user.Password, &user.Email)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (r *MySQLRepository) CreateUser(user *entity.User) error {
+	query := "INSERT INTO users (username, password, email) VALUES (?, ?, ?)"
+	_, err := r.DB.Exec(query, user.Username, user.Password, user.Email)
+	return err
 }

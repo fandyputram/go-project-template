@@ -19,6 +19,10 @@ func NewHandler(uc usecase.Usecase) *gin.Engine {
 	r := gin.Default()
 
 	r.POST("/login", h.Login)
+	r.POST("/register", h.Register)
+	r.GET("/user/:id", h.GetUser)
+
+	r.POST("/login", h.Login)
 	r.GET("/user/:id", h.GetUser)
 
 	// Apply JWT middleware
@@ -46,6 +50,26 @@ func (h *Handler) Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
+}
+
+func (h *Handler) Register(c *gin.Context) {
+	var user struct {
+		Username string `json:"username"`
+		Password string `json:"password"`
+		Email    string `json:"email"`
+	}
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	err := h.usecase.Register(user.Username, user.Password, user.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
 }
 
 func (h *Handler) GetUser(c *gin.Context) {
