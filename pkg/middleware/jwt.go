@@ -8,9 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtKey = []byte("my_secret_key")
-
-func JWTAuthMiddleware() gin.HandlerFunc {
+func JWTAuthMiddleware(jwtKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -23,7 +21,7 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 		claims := &jwt.StandardClaims{}
 
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return jwtKey, nil
+			return []byte(jwtKey), nil
 		})
 
 		if err != nil || !token.Valid {

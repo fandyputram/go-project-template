@@ -11,6 +11,7 @@ type Config struct {
 	Database DatabaseConfig
 	Server   ServerConfig
 	Redis    RedisConfig
+	JWT      JWTConfig
 }
 
 type DatabaseConfig struct {
@@ -25,6 +26,10 @@ type RedisConfig struct {
 	Addr     string
 	Password string
 	DB       int
+}
+
+type JWTConfig struct {
+	Key string
 }
 
 func LoadConfig() *Config {

@@ -25,7 +25,7 @@ func main() {
 	uc := usecase.NewUsecase(repo)
 
 	// Initialize HTTP handler
-	r := httpHandler.NewHandler(uc)
+	r := httpHandler.NewHandler(uc, cfg.JWT.Key)
 
 	// Start HTTP server
 	log.Printf("Starting server on %s", cfg.Server.Address)

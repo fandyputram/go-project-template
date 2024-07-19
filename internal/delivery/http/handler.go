@@ -8,31 +8,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var jwtKey = []byte("my_secret_key")
-
 type Handler struct {
 	usecase usecase.Usecase
+	jwtKey  string
 }
 
-func NewHandler(uc usecase.Usecase) *gin.Engine {
-	h := &Handler{usecase: uc}
+func NewHandler(uc usecase.Usecase, jwtKey string) *gin.Engine {
+	h := &Handler{usecase: uc, jwtKey: jwtKey}
 	r := gin.Default()
 
 	r.POST("/login", h.Login)
 	r.POST("/register", h.Register)
 	r.GET("/user/:id", h.GetUser)
 
-	r.POST("/login", h.Login)
-	r.GET("/user/:id", h.GetUser)
-
 	// Apply JWT middleware
 	auth := r.Group("/")
-	auth.Use(middleware.JWTAuthMiddleware())
+	auth.Use(middleware.JWTAuthMiddleware(h.jwtKey))
 	auth.GET("/protected", h.ProtectedEndpoint)
 
 	return r
 }
-
 func (h *Handler) Login(c *gin.Context) {
 	var user struct {
 		Username string `json:"username"`
